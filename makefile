@@ -15,6 +15,8 @@ DISTDIR := build/dist
 COMPDIR := build/files
 EXEPATH = $(DISTDIR)/$(EXENAME)
 
+LIBOBJ +=
+
 # Dummy target to select the real default target
 .PHONY: default
 default: build

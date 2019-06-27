@@ -4,6 +4,8 @@ src := $(shell find src -name *.cpp)
 obj := $(subst $(SRCDIR),$(COMPDIR),$(src:.cpp=.o))
 dep := $(subst $(SRCDIR),$(COMPDIR),$(obj:.o=.d))
 
+obj += $(LIBOBJ)
+
 # PHONY targets
 
 .PHONY: cleanobj
