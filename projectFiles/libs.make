@@ -1,12 +1,16 @@
-libs:
-	make lib_pistache
+# External libraries makefile
 
-## This is for the Pistache library
-PISTACHEPATH = lib/pistache
-PISTACHEBUILDPATH = $(PISTACHEPATH)/build
+# TARGET: Build all libraries
+.PHONY: libs
+libs: lib_pistache
+
+# LIB SECTION: Pistache
+
+PISTACHEPATH := lib/pistache
+PISTACHEBUILDPATH := $(PISTACHEPATH)/build
 
 .PHONY: lib_pistache
-lib_ùpistache: $(PISTACHEBUILDPATH)/src/libpistache.a
+lib_pistache: $(PISTACHEBUILDPATH)/src/libpistache.a
 
 $(PISTACHEBUILDPATH)/src/libpistache.a:
 	mkdir -p $(PISTACHEPATH)/build
