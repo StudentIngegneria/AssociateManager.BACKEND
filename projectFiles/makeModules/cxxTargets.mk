@@ -1,13 +1,3 @@
-CFLAGS := $(strip $(DFLAGS) $(IFLAGS) $(LFLAGS) $(LDFLAGS) $(CFLAGS_EXTRA) $(CFLAGS_CONFIGURE))
-
-src := $(shell find src -name *.cpp)
-obj := $(subst $(SRCDIR),$(COMPDIR),$(src:.cpp=.o))
-dep := $(subst $(SRCDIR),$(COMPDIR),$(obj:.o=.d))
-
-obj += $(LIBOBJ)
-
-# PHONY targets
-
 .PHONY: cleanobj
 cleanobj:
 	rm -f $(obj)
@@ -18,7 +8,7 @@ cleandep:
 
 .PHONY: cleandist
 cleandist:
-	rm -rf build/dist
+	rm -rf $(DISTDIR)
 
 .PHONY: cleanall
 cleanall:
@@ -35,7 +25,5 @@ $(COMPDIR)/%.d: $(SRCDIR)/%.cpp
 
 	@# Inject compilation instructions
 	@echo -e "\t$(CC) -c -o $(subst .d,.o,$@) $^ $(CFLAGS)" >> $@
-
-# Include
 
 -include $(dep)

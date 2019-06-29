@@ -1,11 +1,13 @@
 #!/usr/bin/env make
 
+MAKEMODULES = projectFiles/makeModules
+
 CC = g++
 EXENAME = main.elf
 
 DFLAGS += -DDEBUG
-LFLAGS += -lpthread
-IFLAGS += -Ilib/pistache/include
+LFLAGS +=
+IFLAGS +=
 LDFLAGS +=
 
 CFLAGS_EXTRA += -std=c++17
@@ -15,14 +17,9 @@ DISTDIR := build/dist
 COMPDIR := build/files
 EXEPATH = $(DISTDIR)/$(EXENAME)
 
-LIBOBJ += lib/pistache/build/src/libpistache.a
+.DEFAULT_GOAL := build
 
-# Dummy target to select the real default target
-.PHONY: default
-default: build
-
--include projectFiles/boilerplate.make
--include projectFiles/libs.make
+-include $(MAKEMODULES)/loadModules.mk
 
 .PHONY: build
 build: $(EXEPATH)
