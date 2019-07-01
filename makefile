@@ -30,6 +30,6 @@ run:
 
 # Explicit rules
 
-$(EXEPATH): $(obj)
+$(EXEPATH): $(OBJ)
 	mkdir -p $(dir $(EXEPATH))
 	$(CC) -o $@ $^ $(CFLAGS)
