@@ -1,35 +1,34 @@
 #!/usr/bin/env make
 
-MAKEMODULES = projectFiles/makeModules
+PACKAGE     := SI-AssociateManagerBackend
+MAKEMODULES := projectFiles/makeModules
 
-CC = g++
-EXENAME = main.elf
+-include $(MAKEMODULES)/defaultEnv.mk
 
-DFLAGS += -DDEBUG
-LFLAGS +=
-IFLAGS +=
-LDFLAGS +=
+.DEFAULT_GOAL: all
+.SUFFIXES:
 
-CFLAGS_EXTRA += -std=c++17
+# Default flags
 
-SRCDIR  := src
-DISTDIR := build/dist
-COMPDIR := build/files
-EXEPATH = $(DISTDIR)/$(EXENAME)
+CC := g++
+CPPFLAGS ?= -DDEBUG -I$(INCLUDEDIR)
+CFLAGS   ?= -g -std=c++17
+LDFLAGS  ?=
 
-.DEFAULT_GOAL := build
+# Project settings
 
--include $(MAKEMODULES)/loadModules.mk
+EXEPATH := $(DISTDIR)/main.elf
 
-.PHONY: build
-build: $(EXEPATH)
+src := $(shell find $(SRCDIR) -name *.cpp)
+dep := $(subst $(SRCDIR),$(COMPDIR),$(src:.cpp=.d))
+obj := $(dep:.d=.o)
 
-.PHONY: run
-run:
-	$(EXEPATH)
+-include $(MAKEMODULES)/libConfig.mk
 
-# Explicit rules
+ALL_CPPFLAGS := $(sort $(CPPFLAGS) $(lib.cppflags))
+ALL_LDFLAGS  := $(sort $(LDFLAGS)  $(lib.ldflags))
+ALL_OBJ      := $(sort $(obj) $(lib.obj))
 
-$(EXEPATH): $(OBJ)
-	mkdir -p $(dir $(EXEPATH))
-	$(CC) -o $@ $^ $(CFLAGS)
+-include $(MAKEMODULES)/GNUTargets.mk
+-include $(MAKEMODULES)/targets.mk
+-include $(MAKEMODULES)/cxxTargets.mk

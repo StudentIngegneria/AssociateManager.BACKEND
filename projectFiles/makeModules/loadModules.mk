@@ -1,3 +1,0 @@
--include $(MAKEMODULES)/cxxEnv.mk
--include $(MAKEMODULES)/cxxTargets.mk
--include $(MAKEMODULES)/libConfig.mk
