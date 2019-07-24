@@ -1,38 +1,42 @@
 #!/usr/bin/env make
 
-CC = g++
-EXENAME = main.elf
+PACKAGE     := SI-AssociateManagerBackend
+MAKEMODULES := projectFiles/makeModules
 
-DFLAGS += -DDEBUG
-LFLAGS += -lpthread
-IFLAGS += -Ilib/pistache/include
-LDFLAGS +=
+-include $(MAKEMODULES)/defaultEnv.mk
 
-CFLAGS_EXTRA += -std=c++17
+.DEFAULT_GOAL := all
+.SUFFIXES :=
 
-SRCDIR  := src
-DISTDIR := build/dist
-COMPDIR := build/files
-EXEPATH = $(DISTDIR)/$(EXENAME)
+# Default flags
 
-LIBOBJ += lib/pistache/build/src/libpistache.a
+CPPFLAGS ?= -DDEBUG
+CXXFLAGS ?= -g
+LDFLAGS  ?=
 
-# Dummy target to select the real default target
-.PHONY: default
-default: build
+# Mandatory flags
 
--include projectFiles/boilerplate.make
--include projectFiles/libs.make
+cppflags := -I$(INCLUDEDIR)
+cxxflags := -std=c++17
+ldflags  :=
 
-.PHONY: build
-build: $(EXEPATH)
+# Project settings
 
-.PHONY: run
-run:
-	$(EXEPATH)
+EXEPATH := $(DISTDIR)/main.elf
 
-# Explicit rules
+src := $(shell find $(SRCDIR) -name *.cpp)
+dep := $(subst $(SRCDIR),$(COMPDIR),$(src:.cpp=.d))
+obj := $(dep:.d=.o)
 
-$(EXEPATH): $(obj)
-	mkdir -p $(dir $(EXEPATH))
-	$(CC) -o $@ $^ $(CFLAGS)
+-include $(MAKEMODULES)/libConfig.mk
+
+ALL_CPPFLAGS := $(sort $(cppflags) $(CPPFLAGS) $(lib.cppflags))
+ALL_CXXFLAGS := $(sort $(cxxflags) $(CXXFLAGS))
+ALL_LDFLAGS  := $(sort $(ldflags) $(LDFLAGS) $(lib.ldflags))
+ALL_OBJ      := $(sort $(obj) $(lib.obj))
+
+-include $(MAKEMODULES)/GNUTargets.mk
+-include $(MAKEMODULES)/targets.mk
+-include $(MAKEMODULES)/cxxTargets.mk
+
+-include $(MAKEMODULES)/inspector.mk

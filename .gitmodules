@@ -1,3 +1,6 @@
 [submodule "lib/pistache"]
 	path = lib/pistache
 	url = git@github.com:oktal/pistache
+[submodule "lib/json"]
+	path = lib/json
+	url = git@github.com:StudentIngegneria/json.git
