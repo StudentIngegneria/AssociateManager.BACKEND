@@ -11,13 +11,13 @@ MAKEMODULES := projectFiles/makeModules
 # Default flags
 
 CPPFLAGS ?= -DDEBUG
-CFLAGS   ?= -g
+CXXFLAGS ?= -g
 LDFLAGS  ?=
 
 # Mandatory flags
 
 cppflags := -I$(INCLUDEDIR)
-cflags   := -std=c++17
+cxxflags := -std=c++17
 ldflags  :=
 
 # Project settings
@@ -31,7 +31,7 @@ obj := $(dep:.d=.o)
 -include $(MAKEMODULES)/libConfig.mk
 
 ALL_CPPFLAGS := $(sort $(cppflags) $(CPPFLAGS) $(lib.cppflags))
-ALL_CFLAGS   := $(sort $(cflags) $(CFLAGS))
+ALL_CXXFLAGS := $(sort $(cxxflags) $(CXXFLAGS))
 ALL_LDFLAGS  := $(sort $(ldflags) $(LDFLAGS) $(lib.ldflags))
 ALL_OBJ      := $(sort $(obj) $(lib.obj))
 

@@ -1,6 +1,6 @@
 $(EXEPATH): $(ALL_OBJ)
 	mkdir -p $(dir $@)
-	$(CC) -o $@ $^ $(ALL_LDFLAGS)
+	$(CXX) -o $@ $^ $(ALL_LDFLAGS)
 
 # Implicit rules
 
@@ -9,9 +9,9 @@ $(COMPDIR)/%.d: $(SRCDIR)/%.cpp
 	@echo "Generating make rule for $(subst .d,.o,$@)"
 
 	@# Generate recipe dependencies
-	$(CC) $< -o $@ -MM -MT $(subst .d,.o,$@) $(ALL_CPPFLAGS) $(ALL_CFLAGS)
+	$(CXX) $< -o $@ -MM -MT $(subst .d,.o,$@) $(ALL_CPPFLAGS) $(ALL_CXXFLAGS)
 
 	@# Inject compilation instructions
-	@echo -e "\t$(CC) -c -o $(subst .d,.o,$@) $^ $(ALL_CPPFLAGS) $(ALL_CFLAGS)" >> $@
+	@echo -e "\t$(CXX) -c -o $(subst .d,.o,$@) $^ $(ALL_CPPFLAGS) $(ALL_CXXFLAGS)" >> $@
 
 -include $(dep)

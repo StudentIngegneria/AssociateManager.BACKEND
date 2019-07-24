@@ -25,7 +25,8 @@ COMPDIR        ?= $(BUILDDIR)/files
 
 SHELL      ?= /bin/sh
 MAKE       ?= make
-CC         ?= g++
+CC         ?= cc
+CXX        ?= g++
 LD         ?= ld
 INSTALL    ?= install
 PKG_CONFIG ?= pkg-config
