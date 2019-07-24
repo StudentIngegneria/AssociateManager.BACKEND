@@ -5,8 +5,8 @@ MAKEMODULES := projectFiles/makeModules
 
 -include $(MAKEMODULES)/defaultEnv.mk
 
-.DEFAULT_GOAL: all
-.SUFFIXES:
+.DEFAULT_GOAL := all
+.SUFFIXES :=
 
 # Default flags
 
