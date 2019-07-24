@@ -1,8 +1,11 @@
-$(v_lib_cflags) += $(lib_dflags) $(lib_lflags) $(lib_iflags)
-lib.cflags += $(lib_cflags)
-lib.obj += $(lib_obj)
-enabledLibs += $(v_lib)
+enabledLibs      += $(v_lib)
+lib.obj          += $(lib_obj)
+lib.cppflags     += $(lib_cppflags)
+lib.ldflags      += $(lib_ldflags)
+lib.cleanTargets += $(v_lib_clean)
 
 # Lib target
 .PHONY: $(v_lib)
 $(v_lib): $(lib_obj)
+
+.PHONY: $(v_lib_clean)
