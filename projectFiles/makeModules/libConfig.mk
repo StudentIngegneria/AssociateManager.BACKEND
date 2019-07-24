@@ -1,27 +1,24 @@
-enabledLibs :=
-lib.obj     :=
-lib.cflags  :=
+enabledLibs      :=
+lib.obj          :=
+lib.cppflags     :=
+lib.ldflags      :=
+lib.cleanTargets :=
 
-v_lib        = lib.$(libname)
-v_lib_obj    = $(v_lib).obj
-v_lib_objdir = $(v_lib_obj)dir
+v_lib          = lib.$(libname)
+v_lib_obj      = $(v_lib).obj
+v_lib_objdir   = $(v_lib_obj)dir
+v_lib_dir      = $(v_lib).dir
+v_lib_cppflags = $(v_lib).cppflags
+v_lib_cflags   = $(v_lib).cflags
+v_lib_ldflags  = $(v_lib).ldflags
+v_lib_clean    = $(v_lib).clean
 
-lib_obj    = $($(v_lib_obj))
-lib_objdir = $($(v_lib_objdir))
-
-# For consistency
-
-v_lib_dir    = $(v_lib).dir
-v_lib_dflags = $(v_lib).dflags
-v_lib_lflags = $(v_lib).lflags
-v_lib_iflags = $(v_lib).iflags
-v_lib_cflags = $(v_lib).cflags
-
-lib_dir    = $($(v_lib_dir))
-lib_dflags = $($(v_lib_dflags))
-lib_lflags = $($(v_lib_lflags))
-lib_iflags = $($(v_lib_iflags))
-lib_cflags = $($(v_lib_cflags))
+lib_obj      = $($(v_lib_obj))
+lib_objdir   = $($(v_lib_objdir))
+lib_dir      = $($(v_lib_dir))
+lib_cppflags = $($(v_lib_cppflags))
+lib_cflags   = $($(v_lib_cflags))
+lib_ldflags  = $($(v_lib_lflags))
 
 libEnable := $(MAKEMODULES)/libEnable.mk
 
