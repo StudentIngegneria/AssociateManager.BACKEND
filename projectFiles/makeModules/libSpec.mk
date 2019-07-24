@@ -35,3 +35,17 @@ $(v_lib_clean):
 # Nothing to clean
 
 -include $(libEnable)
+
+# LIB SECTION: sqlite3
+
+libname := sqlite3
+
+$(v_lib_dir)      :=
+$(v_lib_objdir)   :=
+$(v_lib_obj)      :=
+
+$(v_lib_cppflags) :=
+$(v_lib_ldflags)  := $(shell $(PKG_CONFIG) --libs sqlite3)
+
+$(v_lib_clean):
+# Nothing to clean
