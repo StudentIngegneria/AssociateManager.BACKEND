@@ -10,10 +10,15 @@ MAKEMODULES := projectFiles/makeModules
 
 # Default flags
 
-CC := g++
-CPPFLAGS ?= -DDEBUG -I$(INCLUDEDIR)
-CFLAGS   ?= -g -std=c++17
+CPPFLAGS ?= -DDEBUG
+CFLAGS   ?= -g
 LDFLAGS  ?=
+
+# Mandatory flags
+
+cppflags := -I$(INCLUDEDIR)
+cflags   := -std=c++17
+ldflags  :=
 
 # Project settings
 
@@ -25,8 +30,9 @@ obj := $(dep:.d=.o)
 
 -include $(MAKEMODULES)/libConfig.mk
 
-ALL_CPPFLAGS := $(sort $(CPPFLAGS) $(lib.cppflags))
-ALL_LDFLAGS  := $(sort $(LDFLAGS)  $(lib.ldflags))
+ALL_CPPFLAGS := $(sort $(cppflags) $(CPPFLAGS) $(lib.cppflags))
+ALL_CFLAGS   := $(sort $(cflags) $(CFLAGS))
+ALL_LDFLAGS  := $(sort $(ldflags) $(LDFLAGS) $(lib.ldflags))
 ALL_OBJ      := $(sort $(obj) $(lib.obj))
 
 -include $(MAKEMODULES)/GNUTargets.mk

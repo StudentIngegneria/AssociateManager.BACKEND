@@ -9,9 +9,9 @@ $(COMPDIR)/%.d: $(SRCDIR)/%.cpp
 	@echo "Generating make rule for $(subst .d,.o,$@)"
 
 	@# Generate recipe dependencies
-	$(CC) $< -o $@ -MM -MT $(subst .d,.o,$@) $(ALL_CPPFLAGS)
+	$(CC) $< -o $@ -MM -MT $(subst .d,.o,$@) $(ALL_CPPFLAGS) $(ALL_CFLAGS)
 
 	@# Inject compilation instructions
-	@echo -e "\t$(CC) -c -o $(subst .d,.o,$@) $^ $(ALL_CPPFLAGS)" >> $@
+	@echo -e "\t$(CC) -c -o $(subst .d,.o,$@) $^ $(ALL_CPPFLAGS) $(ALL_CFLAGS)" >> $@
 
 -include $(dep)
