@@ -38,5 +38,4 @@ ALL_OBJ      := $(sort $(obj) $(lib.obj))
 -include $(MAKEMODULES)/GNUTargets.mk
 -include $(MAKEMODULES)/targets.mk
 -include $(MAKEMODULES)/cxxTargets.mk
-
 -include $(MAKEMODULES)/inspector.mk
