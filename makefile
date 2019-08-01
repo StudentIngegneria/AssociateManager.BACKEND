@@ -4,6 +4,7 @@ PACKAGE     := SI-AssociateManagerBackend
 MAKEMODULES := projectFiles/makeModules
 
 -include $(MAKEMODULES)/defaultEnv.mk
+-include $(MAKEMODULES)/findutils.mk
 
 .DEFAULT_GOAL := all
 .SUFFIXES :=
@@ -24,7 +25,7 @@ ldflags  :=
 
 EXEPATH := $(DISTDIR)/main.elf
 
-src := $(shell find $(SRCDIR) -name *.cpp)
+src := $(call findutils_gensrclist,-type f -name *.cpp -print)
 dep := $(subst $(SRCDIR),$(COMPDIR),$(src:.cpp=.d))
 obj := $(dep:.d=.o)
 

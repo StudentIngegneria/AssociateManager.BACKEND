@@ -30,6 +30,7 @@ CXX        ?= g++
 LD         ?= ld
 INSTALL    ?= install
 PKG_CONFIG ?= pkg-config
+FIND       ?= find
 
 INSTALL_PROGRAM ?= $(INSTALL) -m 755
 INSTALL_DATA    ?= $(INSTALL) -m 644
