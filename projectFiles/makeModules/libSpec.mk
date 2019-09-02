@@ -17,7 +17,7 @@ $(lib_objdir)/libpistache.a:
 $(v_lib_clean):
 	cd $(lib.pistache.dir)/build ; make clean
 
--include $(libEnable)
+include $(libEnable)
 
 # LIB SECTION: Json for Modern C++
 # NOTE: HEADER-ONLY LIBRARY
@@ -34,4 +34,4 @@ $(v_lib_ldflags)  :=
 $(v_lib_clean):
 # Nothing to clean
 
--include $(libEnable)
+include $(libEnable)

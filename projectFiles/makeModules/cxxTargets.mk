@@ -26,4 +26,4 @@ $(COMPDIR)/%: $(SRCDIR)/%
 	@ mkdir -p $(dir $@)
 	@ ln -sf $(realpath $<) $@
 
--include $(dep)
+include $(dep)
