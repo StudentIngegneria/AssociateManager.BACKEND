@@ -6,7 +6,7 @@ $(EXEPATH): $(ALL_OBJ)
 
 $(COMPDIR)/%.d: $(COMPDIR)/%.cpp
 	mkdir -p $(dir $@)
-	@echo "Generating make rule for $(subst .d,.o,$@)"
+	echo "Generating make rule for $(subst .d,.o,$@)"
 
 # Generate recipe dependencies
 	$(CXX) -o $@ $(subst $(COMPDIR),$(SRCDIR),$<) \
@@ -19,11 +19,12 @@ $(COMPDIR)/%.d: $(COMPDIR)/%.cpp
 
 	mv '$@.new' '$@'
 
-	@# Inject compilation instructions
-	@echo -e '\n\t$(CXX) -c -o $(subst .d,.o,$@) $^ $(ALL_CPPFLAGS) $(ALL_CXXFLAGS)' >> $@
+# Inject compilation instructions
+	echo -e '\n\t$(CXX) -c -o $(subst .d,.o,$@) $^ $(ALL_CPPFLAGS) $(ALL_CXXFLAGS)' >> $@
 
 $(COMPDIR)/%: $(SRCDIR)/%
 	@ mkdir -p $(dir $@)
 	@ ln -sf $(realpath $<) $@
 
+.SILENT: $(dep)
 include $(dep)
