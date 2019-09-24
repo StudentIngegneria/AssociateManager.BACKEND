@@ -26,5 +26,15 @@ $(COMPDIR)/%: $(SRCDIR)/%
 	@ mkdir -p $(dir $@)
 	@ ln -sf $(realpath $<) $@
 
-.SILENT: $(dep)
-include $(dep)
+# Do not load object rules if not required by the current targets
+# also silence the implicit rule for dep file creation
+noObjDepTargets := install% uninstall %clean dist check
+
+ifneq (,$(dep))
+  ifeq (,$(filter $(noObjDepTargets),$(MAKECMDGOALS)))
+    .SILENT: $(dep)
+    include $(dep)
+  endif
+endif
+
+undefine noObjDepTargets
