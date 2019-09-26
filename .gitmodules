@@ -4,3 +4,6 @@
 [submodule "lib/json"]
 	path = lib/json
 	url = git@github.com:StudentIngegneria/json.git
+[submodule "lib/sqlite_modern_cpp"]
+	path = lib/sqlite_modern_cpp
+	url = https://github.com/StudentIngegneria/sqlite_modern_cpp
