@@ -7,3 +7,6 @@
 [submodule "lib/sqlite_modern_cpp"]
 	path = lib/sqlite_modern_cpp
 	url = https://github.com/StudentIngegneria/sqlite_modern_cpp
+[submodule "lib/genInterfaceOverride.hpp"]
+	path = lib/genInterfaceOverride.hpp
+	url = https://github.com/StudentIngegneria/genInterfaceOverride.hpp

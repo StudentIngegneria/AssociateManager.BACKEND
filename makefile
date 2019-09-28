@@ -3,7 +3,8 @@
 PACKAGE     := SI-AssociateManagerBackend
 MAKEMODULES := projectFiles/makeModules
 
--include $(MAKEMODULES)/defaultEnv.mk
+include $(MAKEMODULES)/defaultEnv.mk
+include $(MAKEMODULES)/findutils.mk
 
 .DEFAULT_GOAL := all
 .SUFFIXES :=
@@ -24,19 +25,18 @@ ldflags  :=
 
 EXEPATH := $(DISTDIR)/main.elf
 
-src := $(shell find $(SRCDIR) -name *.cpp)
+src := $(call findutils_gensrclist,-type f -name *.cpp -print)
 dep := $(subst $(SRCDIR),$(COMPDIR),$(src:.cpp=.d))
 obj := $(dep:.d=.o)
 
--include $(MAKEMODULES)/libConfig.mk
+include $(MAKEMODULES)/libConfig.mk
 
 ALL_CPPFLAGS := $(sort $(cppflags) $(CPPFLAGS) $(lib.cppflags))
 ALL_CXXFLAGS := $(sort $(cxxflags) $(CXXFLAGS))
 ALL_LDFLAGS  := $(sort $(ldflags) $(LDFLAGS) $(lib.ldflags))
 ALL_OBJ      := $(sort $(obj) $(lib.obj))
 
--include $(MAKEMODULES)/GNUTargets.mk
--include $(MAKEMODULES)/targets.mk
--include $(MAKEMODULES)/cxxTargets.mk
-
--include $(MAKEMODULES)/inspector.mk
+include $(MAKEMODULES)/GNUTargets.mk
+include $(MAKEMODULES)/targets.mk
+include $(MAKEMODULES)/cxxTargets.mk
+include $(MAKEMODULES)/inspector.mk

@@ -22,7 +22,7 @@ lib_ldflags  = $($(v_lib_lflags))
 
 libEnable := $(MAKEMODULES)/libEnable.mk
 
--include $(MAKEMODULES)/libSpec.mk
+include $(MAKEMODULES)/libSpec.mk
 
 # TARGET: Build all libraries
 .PHONY: libs

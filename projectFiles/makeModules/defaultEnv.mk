@@ -30,6 +30,10 @@ CXX        ?= g++
 LD         ?= ld
 INSTALL    ?= install
 PKG_CONFIG ?= pkg-config
+FIND       ?= find
 
 INSTALL_PROGRAM ?= $(INSTALL) -m 755
 INSTALL_DATA    ?= $(INSTALL) -m 644
+
+# Builtin apps
+genInterfaceOverride := lib/genInterfaceOverride.hpp/build/dist/genInterfaceOverride.elf
