@@ -19,6 +19,22 @@ $(v_lib_clean):
 
 include $(libEnable)
 
+# LIB SECTION: cpp-httplib
+
+libname := cpp-httplib
+
+$(v_lib_dir)      := lib/cpp-httplib
+$(v_lib_objdir)   :=
+$(v_lib_obj)      :=
+
+$(v_lib_cppflags) := -I$(lib_dir)
+$(v_lib_ldflags)  := -pthread -lssl -lcrypto
+
+$(v_lib_clean):
+# Nothing to clean
+
+include $(libEnable)
+
 # LIB SECTION: Json for Modern C++
 # NOTE: HEADER-ONLY LIBRARY
 
