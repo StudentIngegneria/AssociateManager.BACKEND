@@ -1,6 +1,3 @@
-[submodule "lib/pistache"]
-	path = lib/pistache
-	url = git@github.com:oktal/pistache
 [submodule "lib/json"]
 	path = lib/json
 	url = git@github.com:StudentIngegneria/json.git
@@ -13,3 +10,6 @@
 [submodule "lib/cpp-httplib"]
 	path = lib/cpp-httplib
 	url = https://github.com/StudentIngegneria/cpp-httplib
+[submodule "lib/flags.hh"]
+	path = lib/flags.hh
+	url = https://github.com/StudentIngegneria/flags.hh
