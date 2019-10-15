@@ -18,7 +18,7 @@ lib_objdir   = $($(v_lib_objdir))
 lib_dir      = $($(v_lib_dir))
 lib_cppflags = $($(v_lib_cppflags))
 lib_cflags   = $($(v_lib_cflags))
-lib_ldflags  = $($(v_lib_lflags))
+lib_ldflags  = $($(v_lib_ldflags))
 
 libEnable := $(MAKEMODULES)/libEnable.mk
 
