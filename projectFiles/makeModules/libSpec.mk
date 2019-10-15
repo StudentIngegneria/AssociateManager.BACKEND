@@ -48,3 +48,19 @@ $(v_lib_clean):
 # Nothing to clean
 
 include $(libEnable)
+
+# LIB SECTION: flags.hh
+
+libname := flags_hh
+
+$(v_lib_dir)    := lib/flags.hh
+$(v_lib_objdir) :=
+$(v_lib_obj)    :=
+
+$(v_lib_cppflags) := -I$(lib_dir)
+$(v_lib_ldflags)  :=
+
+$(v_lib_clean):
+# Nothing to clean
+
+include $(libEnable)
