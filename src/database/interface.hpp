@@ -194,6 +194,32 @@ namespace AssociateManager {
 						const std::optional < std::string_view > & mail       = DbCallTags::anyMail       ,
 						const bool & makeBrief = false
 					) const = 0 ;
+
+					virtual json createMember(
+								const Year & year,
+								const MembershipId & id,
+								const std::string_view & uniNumber,
+								const std::string_view & name,
+								const std::string_view & surname,
+								const std::string_view mail,
+								const std::optional < std::string_view > & degreeId,
+								const std::optional < std::string_view > & profession,
+								const std::optional < std::string_view > & phone
+					) const = 0 ;
+
+					virtual json createRegistration(const Year & year, const std::string_view & opening) const = 0;
+
+					virtual json createAdmin(const std::string_view & username, const std::string_view & password) const = 0;
+
+					virtual json createDegree(const std::string_view & id, const std::string_view & degree) const = 0;
+
+					virtual json createSession(const std::string_view & username) const = 0;
+
+					virtual json closeRegistration(const Year & year, const std::string_view & closing) const = 0;
+
+					virtual json deleteMember(const Year & year, const MembershipId & membershipId) const = 0;
+
 			};
+
 
 	}
