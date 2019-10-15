@@ -102,11 +102,12 @@ namespace AssociateManager {
 								return ;
 							} ;
 
-						auto username = reqPayload["username"].get < std::string > () ;
-						if( username.empty() ) {
+						if( reqPayload["username"].empty() ) {
 								reportMalformedPayload( res );
 								return ;
 							} ;
+
+						auto username = reqPayload["username"].get < std::string > () ;
 
 						res.set_content( db.getUser( username ).dump(), "application/json" ) ;
 					}) ;
@@ -121,11 +122,12 @@ namespace AssociateManager {
 								return ;
 							} ;
 
-						auto authToken = reqPayload["auth_token"].get < std::string > () ;
-						if( authToken.empty() ) {
+						if( reqPayload["authToken"].empty() ) {
 								reportMalformedPayload( res ) ;
 								return ;
 							}
+
+						auto authToken = reqPayload["auth_token"].get < std::string > () ;
 
 						res.set_content( db.getSession( authToken ).dump(), "application/json" ) ;
 					}) ;
@@ -140,11 +142,12 @@ namespace AssociateManager {
 								return ;
 							} ;
 
-						auto id = reqPayload["id"].get < std::string > () ;
-						if( id.empty() ) {
+						if( reqPayload["id"].empty() ) {
 								reportMalformedPayload( res );
 								return ;
 							} ;
+
+						auto id = reqPayload["id"].get < std::string > () ;
 
 						res.set_content( db.getDegree( id ).dump(), "application/json" ) ;
 					}) ;
