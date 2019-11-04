@@ -73,7 +73,8 @@ namespace AssociateManager {
                 const std::string_view & uniNumber,
                 const std::string_view & name,
                 const std::string_view & surname,
-                const std::string_view mail,
+                const std::string_view & mail,
+                const int & quote,
                 const std::optional < std::string_view > & degreeId,
                 const std::optional < std::string_view > & profession,
                 const std::optional < std::string_view > & phone

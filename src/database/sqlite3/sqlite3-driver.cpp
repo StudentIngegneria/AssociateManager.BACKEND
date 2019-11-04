@@ -22,11 +22,13 @@
 #include <string>
 #include <sstream>
 #include <cstdarg>
-#include <cstdio>
 #include <nlohmann/json.hpp>
 #include "../interface.hpp"
 #include "sqlite3-driver.hpp"
 #include <sqlite_modern_cpp.h>
+#include <chrono>
+#include <date.h>
+
 
 namespace AssociateManager {
 	using json = nlohmann::json;
@@ -89,7 +91,7 @@ namespace AssociateManager {
 		auto stmt = db << "SELECT id, nomeCorso, storico FROM CorsiDiLaurea WHERE id=?;";
 		stmt << std::string(id);
 		stmt >> [&](
-			int id,
+			std::string id,
 			std::string course,
 			bool historical
 		) {
@@ -129,10 +131,11 @@ namespace AssociateManager {
 		json result;
 		database db = database(this->db);
 
-		auto stmt = db << "SELECT numeroTessera, tesseramento, corsoDiLaurea, nome, cognome, matricola, email, cellulare, professione, cestinato, blacklist FROM Soci WHERE tesseramento=? AND numeroTessera=?;";
+		auto stmt = db << "SELECT dataTesseramento, numeroTessera, tesseramento, corsoDiLaurea, nome, cognome, matricola, email, cellulare, professione, cestinato, blacklist, quota FROM Soci WHERE tesseramento=? AND numeroTessera=?;";
 		stmt << year;
 		stmt << id;
 		stmt >> [&](
+			std::string dataTesseramento,
 			int membershipNumber,
 			int year,
 			std::string degreeId,
@@ -143,13 +146,17 @@ namespace AssociateManager {
 			std::string phone,
 			std::string profession,
 			bool deleted,
-			bool blacklist
+			bool blacklist,
+			int quote
 		) {
 			result = {
+				{"date", dataTesseramento},
 				{"membershipNumber", membershipNumber},
 				{"year", year},
 				{"name", name},
+				{"degreeId", degreeId},
 				{"surname", surname},
+				{"quote", quote},
 				{"uniNumber", uniNumber},
 				{"mail", mail},
 				{"deleted", deleted}
@@ -237,7 +244,7 @@ namespace AssociateManager {
 		}
 		auto stmt = db << query;
 		stmt >> [&](
-			int id,
+			std::string id,
 			std::string course,
 			bool historical
 		) {
@@ -351,7 +358,8 @@ namespace AssociateManager {
 		const std::string_view & uniNumber,
 		const std::string_view & name,
 		const std::string_view & surname,
-		const std::string_view mail,
+		const std::string_view & mail,
+		const int & quote,
 		const std::optional < std::string_view > & degreeId,
 		const std::optional < std::string_view > & profession,
 		const std::optional < std::string_view > & phone
@@ -362,19 +370,24 @@ namespace AssociateManager {
 		}
 
 		database db = database(this->db);
+		std::string tDate = date::format("%Y%m%d", std::chrono::system_clock::now());
+		db << "INSERT INTO Soci(dataTesseramento, numeroTessera, tesseramento, nome, cognome, matricola, email, quota) values(?. ?, ?, ?, ?, ?, ?, ?);"
+		 	 << id << year << std::string(name) << std::string(surname) << std::string(uniNumber) << std::string(mail) << quote;
 
-		db << "INSERT INTO Soci(numeroTessera, tesseramento, corsoDiLaurea, nome, cognome, matricola, professione, email, cellulare) values(?,?,?,?,?,?,?,?,?);"
-			 << id
-			 << year
-			 << (degreeId?std::string(degreeId.value()):nullptr)
-			 << std::string(name)
-			 << std::string(surname)
-			 << std::string(uniNumber)
-			 << (profession?std::string(profession.value()):nullptr)
-			 << std::string(mail)
-			 << (phone?std::string(phone.value()):nullptr);
+		if (degreeId){
+				db << "UPDATE Soci SET corsoDiLaurea=? WHERE numeroTessera=? AND tesseramento=?;"
+					 << std::string(degreeId.value()) << id << year;
+		}
+		if (profession){
+			db << "UPDATE Soci SET professione=? WHERE numeroTessera=? AND tesseramento=?;"
+				 << std::string(profession.value()) << id << year;
+		}
+		if (phone){
+			db << "UPDATE Soci SET cellulare=? WHERE numeroTessera=? AND tesseramento=?;"
+				 << std::string(phone.value()) << id << year;
+		}
 
-		return json({"ok", "ok"});
+		return json({{"ok", "ok"}});
 	};
 
 	json Sqlite3Driver::createRegistration(const Year & year, const std::string_view & opening) const {
@@ -388,7 +401,7 @@ namespace AssociateManager {
 			 << year
 			 << std::string(opening);
 
-		return json({"ok", "ok"});
+		return json({{"ok", "ok"}});
 	};
 
 	json Sqlite3Driver::createAdmin(const std::string_view & username, const std::string_view & password) const {
@@ -402,7 +415,7 @@ namespace AssociateManager {
 			 << std::string(username)
 			 << std::string(password);
 
-		return json({"ok", "ok"});
+		return json({{"ok", "ok"}});
 	};
 
 	json Sqlite3Driver::createDegree(const std::string_view & id, const std::string_view & degree) const  {
@@ -416,7 +429,7 @@ namespace AssociateManager {
 			 << std::string(id)
 			 << std::string(degree);
 
-		return json({"ok", "ok"});
+		return json({{"ok", "ok"}});
 	};
 
 	json Sqlite3Driver::createSession(const std::string_view & username) const {
@@ -435,7 +448,7 @@ namespace AssociateManager {
 			 << std::string(closing)
 			 << year;
 
-		return json({"ok", "ok"});
+		return json({{"ok", "ok"}});
 	};
 
 	json Sqlite3Driver::deleteMember(const Year & year, const MembershipId & membershipId) const {
@@ -445,7 +458,7 @@ namespace AssociateManager {
 			 << year
 			 << membershipId;
 
-		return json({"ok", "ok"});
+		return json({{"ok", "ok"}});
 
 	};
 

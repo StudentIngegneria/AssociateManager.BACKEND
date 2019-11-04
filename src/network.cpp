@@ -10,6 +10,7 @@ namespace AssociateManager {
 		#define HTTPLIB_HANDLER_LAMBDA \
 			[&]( const httplib::Request & req , httplib::Response & res ) -> void
 
+
 		void reportMalformedPayload( httplib::Response & res ) {
 				res.status = 400 ; // 400 Bad Request
 				res.set_content( "Malformed payload", "text/plain" ) ;
@@ -21,6 +22,37 @@ namespace AssociateManager {
 			}
 
 		void setupServer( Server & srv, DbInterface & db ) {
+				std::vector < std::string > handlers = {
+					"/startSession",
+					"/db/getUser",
+					"/db/getUsers",
+					"/db/getSession",
+					"/db/getSessions",
+					"/db/getDegree",
+					"/db/getDegrees",
+					"/db/getRegistrationSeason",
+					"/db/getRegistrationSeasons",
+					"/db/getMembership",
+					"/db/getMemberships",
+					"/db/createAdmin",
+					"/db/createDegree",
+					"/db/createMember",
+					"/db/createRegistration",
+					"/db/deleteMember",
+					"/db/closeRegistration"
+				};
+
+				for (std::string handler: handlers) {
+					srv.Options(handler.c_str(), HTTPLIB_HANDLER_LAMBDA
+					{
+						res.status = 200;
+						res.headers.insert( std::make_pair( "Access-Control-Allow-Origin", "*" ) ) ;
+						res.headers.insert( std::make_pair( "Access-Control-Allow-Methods", "POST" ) ) ;
+						res.headers.insert( std::make_pair( "Access-Control-Allow-Headers", "Content-Type") ) ;
+						res.set_content("", "text/plain");
+					});
+				}
+
 
 				// TODO: Improve invalid request handling
 				auto safeParse = [&]( const std::string_view & s ) -> json
@@ -38,6 +70,8 @@ namespace AssociateManager {
 
 				srv.Post( "/startSession", HTTPLIB_HANDLER_LAMBDA
 					{
+						res.headers.insert( std::make_pair( "Access-Control-Allow-Origin", "*" ) ) ;
+
 						json reqPayload = safeParse( req.body ) ;
 
 						if( ! reqPayload.is_object() ) {
@@ -94,6 +128,8 @@ namespace AssociateManager {
 
 				srv.Post( "/db/getUser", HTTPLIB_HANDLER_LAMBDA
 					{
+						res.headers.insert( std::make_pair( "Access-Control-Allow-Origin", "*" ) ) ;
+
 						if( ! checkAuth( req, res, db ) ) return ;
 
 						json reqPayload = safeParse( req.body ) ;
@@ -114,6 +150,8 @@ namespace AssociateManager {
 
 				srv.Post( "/db/getSession", HTTPLIB_HANDLER_LAMBDA
 					{
+						res.headers.insert( std::make_pair( "Access-Control-Allow-Origin", "*" ) ) ;
+
 						if( ! checkAuth( req, res, db ) ) return ;
 
 						json reqPayload = safeParse( req.body ) ;
@@ -134,6 +172,8 @@ namespace AssociateManager {
 
 				srv.Post( "/db/getDegree", HTTPLIB_HANDLER_LAMBDA
 					{
+						res.headers.insert( std::make_pair( "Access-Control-Allow-Origin", "*" ) ) ;
+
 						if( ! checkAuth( req, res, db ) ) return ;
 
 						json reqPayload = safeParse( req.body ) ;
@@ -154,6 +194,8 @@ namespace AssociateManager {
 
 				srv.Post( "/db/getRegistrationSeason", HTTPLIB_HANDLER_LAMBDA
 					{
+						res.headers.insert( std::make_pair( "Access-Control-Allow-Origin", "*" ) ) ;
+
 						if( ! checkAuth( req, res, db ) ) return ;
 
 						json reqPayload = safeParse( req.body ) ;
@@ -176,6 +218,8 @@ namespace AssociateManager {
 
 				srv.Post( "/db/getMembership", HTTPLIB_HANDLER_LAMBDA
 					{
+						res.headers.insert( std::make_pair( "Access-Control-Allow-Origin", "*" ) ) ;
+
 						if( ! checkAuth( req, res, db ) ) return ;
 
 						json reqPayload = safeParse( req.body ) ;
@@ -211,6 +255,8 @@ namespace AssociateManager {
 
 				srv.Post( "/db/getUsers", HTTPLIB_HANDLER_LAMBDA
 					{
+						res.headers.insert( std::make_pair( "Access-Control-Allow-Origin", "*" ) ) ;
+
 						if( ! checkAuth( req, res, db ) ) return ;
 						res.set_content( db.getUsers().dump(), "application/json" ) ;
 					}) ;
@@ -235,6 +281,8 @@ namespace AssociateManager {
 
 				srv.Post( "/db/getLog", HTTPLIB_HANDLER_LAMBDA
 					{
+						res.headers.insert( std::make_pair( "Access-Control-Allow-Origin", "*" ) ) ;
+
 						if( ! checkAuth( req, res, db ) ) return ;
 
 						json reqPayload = safeParse( req.body ) ;
@@ -261,6 +309,8 @@ namespace AssociateManager {
 
 				srv.Post( "/db/getDegrees", HTTPLIB_HANDLER_LAMBDA
 					{
+						res.headers.insert( std::make_pair( "Access-Control-Allow-Origin", "*" ) ) ;
+
 						if( ! checkAuth( req, res, db ) ) return ;
 
 						json reqPayload = safeParse( req.body ) ;
@@ -279,6 +329,8 @@ namespace AssociateManager {
 
 				srv.Post( "/db/getRegistrationSeasons", HTTPLIB_HANDLER_LAMBDA
 					{
+						res.headers.insert( std::make_pair( "Access-Control-Allow-Origin", "*" ) ) ;
+
 						if( ! checkAuth( req, res, db ) ) return ;
 
 						json reqPayload = safeParse( req.body ) ;
@@ -292,6 +344,8 @@ namespace AssociateManager {
 
 				srv.Post( "/db/getMemberships", HTTPLIB_HANDLER_LAMBDA
 					{
+						res.headers.insert( std::make_pair( "Access-Control-Allow-Origin", "*" ) ) ;
+
 						if( ! checkAuth( req, res, db ) ) return ;
 
 						json reqPayload = safeParse( req.body ) ;
@@ -341,6 +395,309 @@ namespace AssociateManager {
 								"application/json"
 							) ;
 					}) ;
+
+				srv.Post( "/db/createMember", HTTPLIB_HANDLER_LAMBDA
+				{
+					res.headers.insert( std::make_pair( "Access-Control-Allow-Origin", "*" ) ) ;
+
+					if( ! checkAuth( req, res, db ) ) return ;
+
+					json reqPayload = safeParse( req.body ) ;
+					if( ! reqPayload.is_object() ) {
+							reportMalformedPayload( res );
+							return ;
+						} ;
+
+					Year year;
+					MembershipId id;
+					std::string uniNumber;
+					std::string name;
+					std::string surname;
+					std::string mail;
+					int quote;
+
+					std::optional <std::string_view> degreeId = std::nullopt;
+					std::optional <std::string_view> profession = std::nullopt;
+					std::optional <std::string_view> phone = std::nullopt;
+
+					if( reqPayload["year"].is_number_integer() )
+							year = reqPayload["year"].get < Year > () ;
+						else
+							{
+								reportMalformedPayload( res );
+								return ;
+							} ;
+
+					if( reqPayload["id"].is_number_integer() )
+							id = reqPayload["id"].get < MembershipId > () ;
+						else
+							{
+								reportMalformedPayload( res );
+								return ;
+							} ;
+
+					if( reqPayload["uniNumber"].is_string() )
+							uniNumber = reqPayload["uniNumber"].get < std::string > () ;
+						else
+							{
+								reportMalformedPayload( res );
+								return ;
+							} ;
+
+					if( reqPayload["name"].is_string() )
+							name = reqPayload["name"].get < std::string > () ;
+						else
+							{
+								reportMalformedPayload( res );
+								return ;
+							} ;
+
+					if( reqPayload["surname"].is_string() )
+							surname = reqPayload["surname"].get < std::string > () ;
+						else
+							{
+								reportMalformedPayload( res );
+								return ;
+							} ;
+
+					if( reqPayload["mail"].is_string() )
+							mail = reqPayload["mail"].get < std::string > () ;
+						else
+							{
+								reportMalformedPayload( res );
+								return ;
+							} ;
+
+					if( reqPayload["quote"].is_number_integer() )
+							quote = reqPayload["quote"].get < Year > () ;
+						else
+							{
+								reportMalformedPayload( res );
+								return ;
+							} ;
+
+					if( reqPayload["degreeId"].is_string() )
+						degreeId = reqPayload["degreeId"].get < std::string > () ;
+
+					if( reqPayload["profession"].is_string() )
+						profession = reqPayload["profession"].get < std::string > () ;
+
+					if( reqPayload["phone"].is_string() )
+						phone = reqPayload["phone"].get < std::string > () ;
+
+					res.set_content(
+							db.createMember(
+									year, id, uniNumber, name, surname, mail, quote, degreeId, profession, phone
+								).dump() ,
+
+							"application/json"
+						) ;
+				}) ;
+
+				srv.Post( "/db/createRegistration", HTTPLIB_HANDLER_LAMBDA
+				{
+					res.headers.insert( std::make_pair( "Access-Control-Allow-Origin", "*" ) ) ;
+
+					if( ! checkAuth( req, res, db ) ) return ;
+
+					json reqPayload = safeParse( req.body ) ;
+					if( ! reqPayload.is_object() ) {
+							reportMalformedPayload( res );
+							return ;
+						} ;
+
+					int year;
+					std::string opening;
+
+					if( reqPayload["year"].is_number_integer() )
+							year = reqPayload["year"].get < Year > () ;
+						else
+							{
+								reportMalformedPayload( res );
+								return ;
+							} ;
+
+					if( reqPayload["opening"].is_string() )
+							opening = reqPayload["opening"].get < std::string > () ;
+						else
+							{
+								reportMalformedPayload( res );
+								return ;
+							} ;
+
+					res.set_content(
+							db.createRegistration(
+									year, opening
+								).dump() ,
+
+							"application/json"
+						) ;
+				});
+
+				srv.Post( "/db/createAdmin", HTTPLIB_HANDLER_LAMBDA
+				{
+					res.headers.insert( std::make_pair( "Access-Control-Allow-Origin", "*" ) ) ;
+
+					if( ! checkAuth( req, res, db ) ) return ;
+
+					json reqPayload = safeParse( req.body ) ;
+					if( ! reqPayload.is_object() ) {
+							reportMalformedPayload( res );
+							return ;
+						} ;
+
+					std::string username;
+					std::string password;
+
+					if( reqPayload["username"].is_string() )
+							username = reqPayload["username"].get < std::string > () ;
+						else
+							{
+								reportMalformedPayload( res );
+								return ;
+							} ;
+
+					if( reqPayload["password"].is_string() )
+							password = reqPayload["password"].get < std::string > () ;
+						else
+							{
+								reportMalformedPayload( res );
+								return ;
+							} ;
+
+					res.set_content(
+							db.createAdmin(
+									username, password
+								).dump() ,
+
+							"application/json"
+						) ;
+				});
+
+				srv.Post( "/db/createDegree", HTTPLIB_HANDLER_LAMBDA
+				{
+					res.headers.insert( std::make_pair( "Access-Control-Allow-Origin", "*" ) ) ;
+
+					if( ! checkAuth( req, res, db ) ) return ;
+
+					json reqPayload = safeParse( req.body ) ;
+					if( ! reqPayload.is_object() ) {
+							reportMalformedPayload( res );
+							return ;
+						} ;
+
+					std::string id;
+					std::string degree;
+
+					if( reqPayload["id"].is_string() )
+							id = reqPayload["id"].get < std::string > () ;
+						else
+							{
+								reportMalformedPayload( res );
+								return ;
+							} ;
+
+					if( reqPayload["degree"].is_string() )
+							degree = reqPayload["degree"].get < std::string > () ;
+						else
+							{
+								reportMalformedPayload( res );
+								return ;
+							} ;
+
+					res.set_content(
+							db.createDegree(
+									id, degree
+								).dump() ,
+
+							"application/json"
+						) ;
+				});
+
+				srv.Post( "/db/createSession", HTTPLIB_HANDLER_LAMBDA
+				{
+					res.headers.insert( std::make_pair( "Access-Control-Allow-Origin", "*" ) ) ;
+
+					res.set_content(
+							"{\"ok\": \"ok\"}",
+
+							"application/json"
+						) ;
+				});
+
+				srv.Post( "/db/closeRegistration", HTTPLIB_HANDLER_LAMBDA
+				{
+					res.headers.insert( std::make_pair( "Access-Control-Allow-Origin", "*" ) ) ;
+
+					if( ! checkAuth( req, res, db ) ) return ;
+
+					json reqPayload = safeParse( req.body ) ;
+					if( ! reqPayload.is_object() ) {
+							reportMalformedPayload( res );
+							return ;
+						} ;
+
+					int year;
+					std::string closing;
+
+					if( reqPayload["year"].is_number_integer() )
+							year = reqPayload["year"].get < int > () ;
+						else
+							{
+								reportMalformedPayload( res );
+								return ;
+							} ;
+
+					if( reqPayload["closing"].is_string() )
+							closing = reqPayload["closing"].get < std::string > () ;
+						else
+							{
+								reportMalformedPayload( res );
+								return ;
+							} ;
+
+					res.set_content(
+							db.closeRegistration(
+									year, closing
+								).dump() ,
+
+							"application/json"
+						) ;
+				});
+
+				srv.Post( "/db/deleteMember", HTTPLIB_HANDLER_LAMBDA
+					{
+						res.headers.insert( std::make_pair( "Access-Control-Allow-Origin", "*" ) ) ;
+
+						if( ! checkAuth( req, res, db ) ) return ;
+
+						json reqPayload = safeParse( req.body ) ;
+						if( ! reqPayload.is_object() ) {
+								reportMalformedPayload( res );
+								return ;
+							} ;
+
+						Year year ; MembershipId id ;
+
+						if( reqPayload["year"].is_number_integer() )
+								year = reqPayload["year"].get < Year > () ;
+							else
+								{
+									reportMalformedPayload( res );
+									return ;
+								} ;
+
+						if( reqPayload["id"].is_number_integer() )
+								id = reqPayload["id"].get < MembershipId > () ;
+							else
+								{
+									reportMalformedPayload( res );
+									return ;
+								} ;
+
+						res.set_content( db.deleteMember( year, id ).dump(), "application/json" ) ;
+					}) ;
+
 			}
 
 		#undef HTTPLIB_HANDLER_LAMBDA

@@ -13,3 +13,6 @@
 [submodule "lib/flags.hh"]
 	path = lib/flags.hh
 	url = https://github.com/StudentIngegneria/flags.hh
+[submodule "lib/date"]
+	path = lib/date
+	url = https://github.com/HowardHinnant/date

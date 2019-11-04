@@ -64,3 +64,20 @@ $(v_lib_clean):
 # Nothing to clean
 
 include $(libEnable)
+
+# LIB SECTION: Date
+# NOTE: HEADER-ONLY LIBRARY
+
+libname := date
+
+$(v_lib_dir)      := lib/date
+$(v_lib_objdir)   :=
+$(v_lib_obj)      :=
+
+$(v_lib_cppflags) := -I$(lib_dir)/include/date
+$(v_lib_ldflags)  :=
+
+$(v_lib_clean):
+# Nothing to clean
+
+include $(libEnable)
