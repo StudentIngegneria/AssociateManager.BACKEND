@@ -1,6 +1,6 @@
 .PHONY: run
 run:
-	$(EXEPATH)
+	$(EXEPATH) $(RUNOPT)
 
 .PHONY: genInterfaceOverride
 genInterfaceOverride: $(genInterfaceOverride)

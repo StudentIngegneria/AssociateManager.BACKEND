@@ -28,7 +28,7 @@ $(COMPDIR)/%: $(SRCDIR)/%
 
 # Do not load object rules if not required by the current targets
 # also silence the implicit rule for dep file creation
-noObjDepTargets := install% uninstall %clean dist check
+noObjDepTargets := install% uninstall %clean dist check run
 
 ifneq (,$(dep))
   ifeq (,$(filter $(noObjDepTargets),$(MAKECMDGOALS)))
