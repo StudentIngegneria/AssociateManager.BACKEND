@@ -1,6 +1,21 @@
-[submodule "lib/pistache"]
-	path = lib/pistache
-	url = git@github.com:oktal/pistache
 [submodule "lib/json"]
 	path = lib/json
 	url = git@github.com:StudentIngegneria/json.git
+[submodule "lib/sqlite_modern_cpp"]
+	path = lib/sqlite_modern_cpp
+	url = https://github.com/StudentIngegneria/sqlite_modern_cpp
+[submodule "lib/genInterfaceOverride.hpp"]
+	path = lib/genInterfaceOverride.hpp
+	url = https://github.com/StudentIngegneria/genInterfaceOverride.hpp
+[submodule "lib/cpp-httplib"]
+	path = lib/cpp-httplib
+	url = https://github.com/StudentIngegneria/cpp-httplib
+[submodule "lib/flags.hh"]
+	path = lib/flags.hh
+	url = https://github.com/StudentIngegneria/flags.hh
+[submodule "lib/date"]
+	path = lib/date
+	url = https://github.com/HowardHinnant/date
+[submodule "lib/bcrypt"]
+	path = lib/bcrypt
+	url = https://github.com/StudentIngegneria/libbcrypt
