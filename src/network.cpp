@@ -1,6 +1,12 @@
 #include <charconv>
 #include <optional>
 #include <iostream>
+#include <array>
+#include <string>
+#include <string_view>
+#include <utility>
+
+#include <bcrypt/BCrypt.hpp>
 
 #include "database/interface.hpp"
 #include "network.hpp"
@@ -10,15 +16,64 @@ namespace AssociateManager {
 		#define HTTPLIB_HANDLER_LAMBDA \
 			[&]( const httplib::Request & req , httplib::Response & res ) -> void
 
-
 		void reportMalformedPayload( httplib::Response & res ) {
 				res.status = 400 ; // 400 Bad Request
 				res.set_content( "Malformed payload", "text/plain" ) ;
 			}
 
-		// STUB FUNCTION
 		bool checkAuth( const httplib::Request & req, httplib::Response & res, DbInterface & db ) {
-				return true ;
+
+				using npos_t = std::remove_const_t < decltype( std::string::npos ) > ;
+
+				std::string_view tokenView ;
+				std::pair < npos_t, npos_t > fieldBounds( 0, 1 ) ;
+
+				const std::string & cookieHeaderValue = [&]() -> std::string {
+					const auto & cookieHeader = req.headers.find( "Cookie" ) ;
+					return cookieHeader == req.headers.end() ? "" : cookieHeader->second ;
+				}() ;
+
+				auto tokenViewFactory = [&]( const npos_t & begin, const npos_t & back ) {
+						return std::string_view( & cookieHeaderValue.at( begin ), back - begin ) ;
+					} ;
+
+				auto isTargetField = [&]( const npos_t & begin, const npos_t & back ) -> bool {
+						return 0 == tokenViewFactory( begin, back ).compare( "authToken=" ) ;
+					} ;
+
+				auto goneOutOfBounds = [&]() -> bool {
+						auto & npos = std::string::npos ;
+						return fieldBounds.first  == npos && fieldBounds.second == npos ;
+					} ;
+
+				auto fieldFound = std::bind( isTargetField, fieldBounds.first, fieldBounds.second ) ;
+
+				while( ! goneOutOfBounds() && ! fieldFound() ) {
+						// See the HTTP spec for the +2
+						fieldBounds.first  = cookieHeaderValue.find( ';', fieldBounds.second ) + 2 ;
+						fieldBounds.second = cookieHeaderValue.find( '=', fieldBounds.first  ) ;
+					} ;
+
+				if( fieldFound() ) {
+						fieldBounds.first  = fieldBounds.second + 1 ;
+						fieldBounds.second = cookieHeaderValue.find( ';', fieldBounds.second ) - 1 ;
+
+						tokenView = goneOutOfBounds() ? std::string_view() :
+							tokenViewFactory( fieldBounds.first, fieldBounds.second ) ;
+					}
+
+				if( tokenView.empty() ) {
+						res.status = 403 ; // Forbidden
+						res.set_content(
+								"Session token is invalid or missing.\n"
+								"Please open a new session at /startSession",
+								"text/plain"
+							) ;
+
+						return false ;
+					}
+
+				return db.getSession( tokenView ) != "{}"_json ;
 			}
 
 		void setupServer( Server & srv, DbInterface & db ) {
@@ -103,26 +158,21 @@ namespace AssociateManager {
 
 						auto passwordHash = dbUser["passwordHash"].get < std::string > () ;
 
-						// Stub functions, TODO actually implement
-						auto getHash = [&]( std::string )
-							{ return db.getUser( username )["passwordHash"].get < std::string > () ; } ;
-
-						auto genAuthToken = [](){ return "AVHJHGHDGGDHJ" ; } ;
-
 						// Check password
-						if( passwordHash != getHash( password ) ) {
+						if( BCrypt::validatePassword( password, passwordHash ) ) {
 								// TODO: Set appropriate headers
 								res.status = 401 ; // 401 Unauthorized
 								return ;
 							}
 
-						// If auth succeed register a new user session
+						// If auth succeeds register a new user session
+						// and export the session token as cookie over HTTP
 
-						std::string authToken = genAuthToken() ;
+						db.createSession( username ) ;
 
-						// db.setSession( username, authToken, keepAlive ) ;
+						std::string authCookie( "authToken=" ) ;
+						authCookie += db.getSessions( username )["auth_token"].get < std::string > () ;
 
-						std::string authCookie( "authToken=" ) ; authCookie += authToken ;
 						res.headers.insert( std::make_pair( "Set-Cookie", authCookie ) ) ;
 					}) ;
 
