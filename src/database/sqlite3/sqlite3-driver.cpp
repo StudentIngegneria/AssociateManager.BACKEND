@@ -21,6 +21,7 @@
 #include <string_view>
 #include <string>
 #include <sstream>
+#include <fstream>
 #include <cstdarg>
 #include <nlohmann/json.hpp>
 #include "../interface.hpp"
@@ -28,7 +29,6 @@
 #include <sqlite_modern_cpp.h>
 #include <chrono>
 #include <date.h>
-
 
 namespace AssociateManager {
 	using json = nlohmann::json;
@@ -433,8 +433,36 @@ namespace AssociateManager {
 	};
 
 	json Sqlite3Driver::createSession(const std::string_view & username) const {
-		// TODO Session Management in the DB
-		return json({});
+
+		// Token generation settings
+		constexpr auto tokenSize     = 256 ;
+		constexpr auto tokenLifetime = "3600" ;
+		constexpr auto timestampFmt  = "%Y%m%d%H%M%S" ;
+
+		char token_cstr[ tokenSize ] ;
+
+		// Generate a session token
+		std::ifstream( "/dev/urandom" ).read( token_cstr, tokenSize ) ;
+
+		// Generate needed timestamps
+
+		using std::chrono::system_clock ;
+		using std::chrono::hours ;
+
+		const auto now_tp = system_clock::now() ;
+
+		// Populate a session record
+		database db = database(db) ;
+		db <<
+			"INSERT INTO Sessioni( auth_token, creazione, scadenza, utente ) "
+			"values( ?, ?, ?, ? ) ;"
+			<< std::string( token_cstr, tokenSize )
+			<< date::format( timestampFmt, now_tp )
+			<< date::format( timestampFmt, now_tp + hours(1) )
+			<< std::string( username.data(), username.length() )
+			;
+
+		return json({{"ok", "ok"}});
 	};
 
 	json Sqlite3Driver::closeRegistration(const Year & year, const std::string_view & closing) const {
