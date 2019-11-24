@@ -16,3 +16,6 @@
 [submodule "lib/date"]
 	path = lib/date
 	url = https://github.com/HowardHinnant/date
+[submodule "lib/bcrypt"]
+	path = lib/bcrypt
+	url = https://github.com/StudentIngegneria/libbcrypt

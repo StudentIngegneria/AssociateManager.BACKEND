@@ -81,3 +81,25 @@ $(v_lib_clean):
 # Nothing to clean
 
 include $(libEnable)
+
+# LIB SECTION: BCrypt
+
+libname := bcrypt
+
+$(v_lib_dir)      := lib/bcrypt
+$(v_lib_objdir)   :=
+$(v_lib_obj)      := $(lib_dir)/build/libbcrypt.a
+
+$(v_lib_cppflags) := -I$(lib_dir)/include
+$(v_lib_ldflags)  :=
+
+$(lib_obj): lib_dir := $(lib_dir)
+$(lib_obj): $(lib_dir)
+	mkdir "$(lib_dir)/build"
+	cd "$(lib_dir)/build" && cmake .. && $(MAKE)
+
+$(v_lib_clean): lib_dir := $(lib_dir)
+$(v_lib_clean):
+	rm -r $(lib_dir)/build
+
+include $(libEnable)
